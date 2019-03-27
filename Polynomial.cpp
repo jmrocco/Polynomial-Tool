@@ -9,23 +9,21 @@
 
 #ifndef MARMOSET_TESTING
 int main() {
-
+        // the Marmoset testing program automatically
+        // calls the functions with values
+        // the variables and function calls below
+        // are for testing purposes
         poly_t p_polly{nullptr,0};
         poly_t q_polly{nullptr,0};
         double a_array[5] = {24,10,-15, 0,1};
         unsigned int degree = 4;
-//double x = 1.1;
-//double r = 3;
         init_poly(p_polly,a_array, degree);
-//double a = 2.4;
-//double b = 3.5;
-//double n = 2;
-//poly_multiply (p_polly,p_polly);
         poly_add(p_polly, p_polly);
         return 0;
 }
 #endif
 
+// initialize the polynimal 
 void init_poly( poly_t &p, double const init_coeffs[],unsigned int const init_degree )
 {
         //if nullptr then delete contents
@@ -38,7 +36,8 @@ void init_poly( poly_t &p, double const init_coeffs[],unsigned int const init_de
         //create a new poly with sufficent space and change its degree
         p.a_coeffs = new double[init_degree + 1];
         p.degree = init_degree;
-//assign it values
+        
+        //assign the values 
         for (unsigned int i{0}; i < (init_degree + 1); ++i)
         {
                 p.a_coeffs[i] = init_coeffs[i];
@@ -69,6 +68,7 @@ double poly_coeff ( poly_t const &p, unsigned int n )
 
         return p.a_coeffs[n];
 }
+//gets the value of the polynomial 
 double poly_val( poly_t const &p, double x )
 {
         //if nullptr then throw 0
@@ -81,7 +81,7 @@ double poly_val( poly_t const &p, double x )
 
         int new_degree {p.degree - 1};
 
-        //plug in the x and compute the value
+        //plug in the x value and compute the result
         for (int i{new_degree}; i >= 0; --i)
         {
                 value = value * x + p.a_coeffs[i];
@@ -89,15 +89,18 @@ double poly_val( poly_t const &p, double x )
         return value;
 }
 
+//add polynomials together 
 void poly_add( poly_t &p, poly_t const &q )
 {
+        //throw a 0 if it is a nullptr 
         if (p.a_coeffs == nullptr || q.a_coeffs == nullptr)
         {
                 throw 0;
         }
-//create temp space to store coes
+        //create temp space to store coefficents
         double *temp_coe{new double[std::max(p.degree,q.degree) + 1]{}};
-//add them together
+        
+        //add the polynomials together 
         for (int i{std::max(p.degree,q.degree)}; i >= 0; --i )
         {
                 if(p.degree >= i)
@@ -111,10 +114,12 @@ void poly_add( poly_t &p, poly_t const &q )
                 std::cout << temp_coe[i] <<std::endl;
         }
 
+        //find the degree of the polynomial 
         p.degree = std::max(p.degree,q.degree);
-
+        
         int temp_degree =std::max(p.degree,q.degree);
 
+        //assign the degree 
         while (temp_coe[temp_degree]== 0)
         {
                 p.degree -=1;
@@ -125,7 +130,7 @@ void poly_add( poly_t &p, poly_t const &q )
                 p.degree = 0;
         }
 
-//assign new coe values  back to p poly
+        //assign new coefficent values back to p poly
         double *new_coes{ new double[p.degree + 1 ]{}};
         for (unsigned int i{0}; i <= p.degree; ++i)
         {
@@ -139,6 +144,7 @@ void poly_add( poly_t &p, poly_t const &q )
         p.a_coeffs = new_coes;
 
 }
+//subtract the polynomials 
 void poly_subtract( poly_t &p, poly_t const &q )
 {
         //if empty than throw 0
@@ -146,7 +152,7 @@ void poly_subtract( poly_t &p, poly_t const &q )
         {
                 throw 0;
         }
-//create new temp coe
+        //create new temp coefficent
         double *temp_coe{new double[std::max(p.degree,q.degree) + 1]{}};
 
         //subtract them
@@ -161,11 +167,12 @@ void poly_subtract( poly_t &p, poly_t const &q )
                         temp_coe[i] -= q.a_coeffs[i];
                 }
         }
-//degree is the highest degree
+        //degree is the highest degree
         p.degree = std::max(p.degree,q.degree);
 
         int temp_degree =std::max(p.degree,q.degree);
 
+        //take the new degree and assign it 
         while (temp_coe[temp_degree]== 0)
         {
                 p.degree -=1;
@@ -178,7 +185,8 @@ void poly_subtract( poly_t &p, poly_t const &q )
 
 
         double *new_coes{ new double[p.degree + 1 ]{}};
-//reassign the space to p coe
+
+        //reassign the space to p coe
         for (unsigned int i{0}; i <= p.degree; ++i)
         {
                 new_coes[i] = temp_coe[i];
@@ -192,14 +200,16 @@ void poly_subtract( poly_t &p, poly_t const &q )
 
 }
 
+//multiply the polynomials 
 void poly_multiply( poly_t &p, poly_t const &q )
 {
-        //if its empty
+        //if its empty throw a 0
         if (p.a_coeffs == nullptr || q.a_coeffs == nullptr)
         {
                 throw 0;
         }
         double *temp_coe{new double[p.degree + q.degree + 1]{}};
+        
         //mulitply the first term by the second term
         for (int i=0; i<= p.degree; i++)
         {
@@ -208,7 +218,7 @@ void poly_multiply( poly_t &p, poly_t const &q )
                 for (int j=0; j<=q.degree; j++)
                         temp_coe[i+j] += p.a_coeffs[i]*q.a_coeffs[j];
         }
-//updates the degree
+        //updates the degree
         p.degree += q.degree;
 
         delete [] p.a_coeffs;
@@ -216,10 +226,11 @@ void poly_multiply( poly_t &p, poly_t const &q )
         temp_coe = nullptr;
 
 }
+//divide the polynomials
 double poly_divide( poly_t &p, double r )
 {
         double value{0};
-//if there is no coes throw 0
+        //if there is no coes throw 0
         if (p.a_coeffs == nullptr)
         {
                 throw 0;
@@ -236,7 +247,7 @@ double poly_divide( poly_t &p, double r )
 
                 double *new_coes{ new double[p.degree]{}};
 
-//perform synthetic division
+                //perform synthetic division
                 for (unsigned int i{p.degree}; i > 0; --i)
                 {
                         value *= r;
@@ -246,7 +257,8 @@ double poly_divide( poly_t &p, double r )
                 double remainder = (new_coes[0]*r + p.a_coeffs[0]);
 
                 p.degree -= 1;
-//delete the coe
+                
+                //delete the coe
                 delete [] p.a_coeffs;
                 p.a_coeffs = new_coes;
                 new_coes = nullptr;
@@ -256,7 +268,7 @@ double poly_divide( poly_t &p, double r )
 }
 
 
-
+//differentiaion in the polynomials
 void poly_diff( poly_t &p )
 {
         //check if empty
@@ -273,14 +285,16 @@ void poly_diff( poly_t &p )
         else
         {
                 double *new_coes{new double[p.degree]{}};
-//perform differentiation
+
+                //perform differentiation
                 for (unsigned int i{0}; i < p.degree; ++i)
                 {
                         new_coes[i] = (i + 1) * p.a_coeffs[i + 1];
                         std::cout <<new_coes[i] <<std::endl;
                 }
                 p.degree -= 1;
-//delete the polys and reassign
+
+                //delete the polys and reassign
                 delete [] p.a_coeffs;
                 p.a_coeffs = new_coes;
                 new_coes = nullptr;
@@ -288,13 +302,14 @@ void poly_diff( poly_t &p )
         }
 
 }
+
 double poly_approx_int( poly_t const &p, double a, double b, unsigned int n )
 {
         if (p.a_coeffs == nullptr)
         {
                 throw 0;
         }
-//perform sum math
+        //perform sum math
 
         double h_value = (b-a)/n;
         double sum{0};
@@ -303,7 +318,7 @@ double poly_approx_int( poly_t const &p, double a, double b, unsigned int n )
 
         for (unsigned int k{1}; k < n; ++k )
         {
-                //loop to perform the calculation
+        //loop to perform the calculation
                 x_eval = a + ( k* h_value);
                 sum += 2 * poly_val(p, x_eval);
         }
@@ -314,7 +329,3 @@ double poly_approx_int( poly_t const &p, double a, double b, unsigned int n )
 
         return sum;
 }
-
-
-
-
